@@ -25,9 +25,8 @@ $ ai count files larger than 1 MB in this folder
 
 Requirements: `curl`, `jq`, and the `OPENAI_API_KEY` environment variable.
 
-<details>
-   <summary>Demo Video:</summary>
-   
-   https://github.com/user-attachments/assets/93185c1e-ba7b-4935-95a4-3d79eff8cd9c
-   
-</details>
+Demo
+----
+
+![demo](https://github.com/user-attachments/assets/6884bc60-2dcb-4cf1-8c41-ce0060df9b38)
+
