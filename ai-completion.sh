@@ -17,8 +17,28 @@ ai() {
     local prompt="$*"
 
     # Detect operating system and shell
-    local os_name shell_name
-    os_name=$(uname -s)
+    local os_name shell_name os_kernel
+    os_kernel=$(uname -s)
+
+    # Determine a human-readable OS name
+    case "$os_kernel" in
+        Linux)
+            if [ -r /etc/os-release ]; then
+                # shellcheck disable=SC1091 # runtime detection
+                os_name=$(grep -m1 '^PRETTY_NAME=' /etc/os-release | cut -d= -f2- | tr -d '"')
+            fi
+            # Fallback if /etc/os-release is missing or malformed
+            os_name=${os_name:-"Linux"}
+            ;;
+        Darwin)
+            # e.g. "macOS 14.5"
+            os_name="macOS $(sw_vers -productVersion)"
+            ;;
+        *)
+            os_name="$os_kernel" ;; # Unknown – use the kernel name
+    esac
+
+    # Detect shell name
     if [ -n "$ZSH_VERSION" ]; then
         shell_name="zsh"
     else
