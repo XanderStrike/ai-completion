@@ -3,6 +3,8 @@ ai-completion
 
 Shell function that lets you draft, edit, and run OpenAI-generated commands directly from your prompt.
 
+A massive simplification of my previous solution: [aicmd](https://github.com/XanderStrike/aicmd)
+
 Quick install
 -------------
 1. Save the script or clone this repo somewhere
