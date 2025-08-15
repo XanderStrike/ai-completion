@@ -16,16 +16,25 @@
 ai() {
     local prompt="$*"
 
+    # Detect operating system and shell
+    local os_name shell_name
+    os_name=$(uname -s)
+    if [ -n "$ZSH_VERSION" ]; then
+        shell_name="zsh"
+    else
+        shell_name="bash"
+    fi
+
     # Build JSON payload. Using printf to avoid issues with embedded quotes
-    local json_payload payload
+    local payload
     payload=$(printf '{
             "model": "gpt-4-turbo",
             "messages": [
-                {"role": "system", "content": "You are a bash command generator. Return ONLY the bash command on a single line without any explanation or markdown formatting."},
-                {"role": "user",   "content": "Generate a bash command for: %s"}
+                {"role": "system", "content": "You are a %s command generator on %s. Return ONLY the command on a single line without any explanation or markdown formatting."},
+                {"role": "user",   "content": "Generate a %s command for: %s"}
             ],
             "temperature": 0.3
-        }' "$prompt")
+        }' "$shell_name" "$os_name" "$shell_name" "$prompt")
 
     # Fetch response from the OpenAI API
     local response
