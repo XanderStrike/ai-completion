@@ -122,15 +122,19 @@ _ai_fetch_ollama() {
     local temp="${OLLAMA_TEMP:-0.3}"
     local host="${OLLAMA_HOST:-http://localhost:11434}"
 
-    # Build payload using printf (easier than jq because Ollama spec is simpler)
+    # Build payload with jq to ensure proper JSON escaping (handles newlines, quotes, etc.)
     local payload
-    payload=$(printf '{"model":"%s","stream":false,"messages":[{"role":"system","content":"You are a %s command generator on %s. Return ONLY the command on a single line without any explanation or markdown formatting."},{"role":"user","content":"%s"}],"temperature":%s}' \
-                      "$model" "$shell_name" "$os_name" "$user_content" "$temp")
+    payload=$(jq -n \
+        --arg model "$model" \
+        --arg sys "You are a ${shell_name} command generator on ${os_name}. Return ONLY the command on a single line without any explanation or markdown formatting." \
+        --arg usr "$user_content" \
+        --argjson temp "$temp" \
+        '{model:$model, stream:false, messages:[{role:"system", content:$sys}, {role:"user", content:$usr}], temperature:$temp}')
 
     # Informative echo so the user knows which model is being used
     echo "Using $model on $host..." >&2
 
-    curl -s "$host/api/chat" -H "Content-Type: application/json" -d "$payload" | jq -r '.message.content'
+    curl -s "$host/api/chat" -H "Content-Type: application/json" -d "$payload" | jq -r '.message.content // empty'
 }
 
 ###############################################################################
