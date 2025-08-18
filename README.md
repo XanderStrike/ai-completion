@@ -1,26 +1,63 @@
 ai-completion
 ==============
 
-Shell function that lets you draft, edit, and run OpenAI-generated commands directly from your prompt.
+Tiny shell helper that lets you draft, tweak, and run AI-generated commands straight from Bash or Zsh.
 
-A massive simplification of my previous solution: [aicmd](https://github.com/XanderStrike/aicmd)
+It exposes two public functions:
+
+• ai  – talks to the OpenAI Chat Completions API  
+• aio – talks to a local Ollama daemon
 
 Quick install
 -------------
-1. Save the script or clone this repo somewhere
-2. Source it from your shell startup file (Bash or Zsh):
+1. Save the script or clone this repo somewhere.
+2. In ~/.bashrc or ~/.zshrc add
    ```shell
-   echo 'source /path/to/ai-completion.sh' >> ~/.bashrc   # or ~/.zshrc
+   source /path/to/ai-completion.sh
    ```
-3. Ensure the OPENAI_API_KEY environment variable is set
+3. For `ai` export `OPENAI_API_KEY=<your-key>`.
 
 Usage
 -----
-At the prompt type `ai` followed by what you want to do.
+Describe the task in plain English:
 
 ```shell
-$ ai count files larger than 1 MB in this folder
-# <command appears, you can edit it, then it is executed>
+➜ ai organize all photos in this directory into subfolders using the iso date of the image capture time
+$ exiftool '-Directory<DateTimeOriginal' -d '%Y-%m-%d' .
+
 ```
 
-Requirements: `curl`, `jq`, and the `OPENAI_API_KEY` environment variable.
+The suggestion appears inline on your prompt. Edit if necessary, press ↵, and it executes.
+
+Piping
+------
+Anything you pipe into the function is forwarded to the model as extra context, e.g.
+
+```shell
+➜ git diff --staged | ai write a commit message
+$ git commit -am "Refactor payload construction using jq for better JSON handling"
+```
+
+Local
+-----
+Save a buck using local ollama for the easy stuff
+
+```shell
+➜ aio list stopped docker containers
+Using gemma3:4b on http://localhost:11434...
+$ docker ps -a --filter status=exited
+```
+
+Environment variables
+---------------------
+Required for `ai`:
+• OPENAI_API_KEY – your OpenAI key
+
+Optional (defaults):
+• OPENAI_MODEL  (gpt-4-turbo)  
+• OPENAI_TEMP   (0.3)          
+• OLLAMA_MODEL  (gemma3:4b)    
+• OLLAMA_TEMP   (0.3)          
+• OLLAMA_HOST   (http://localhost:11434)
+
+Dependencies: curl, jq, and – for `aio` – a running Ollama daemon somewhere.
