@@ -94,7 +94,7 @@ _ai_interactive_execute() {
 _ai_fetch_openai() {
     local user_content="$1" shell_name="$2" os_name="$3"
 
-    local model="${OPENAI_MODEL:-gpt-4-turbo}"
+    local model="${OPENAI_MODEL:-gpt-5-chat-latest}"
     local temp="${OPENAI_TEMP:-0.3}"
 
     # Build JSON with jq so that escaping is handled correctly
