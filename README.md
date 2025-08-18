@@ -54,7 +54,7 @@ Required for `ai`:
 * OPENAI_API_KEY – your OpenAI key
 
 Optional (defaults):
-* OPENAI_MODEL  (gpt-4-turbo)  
+* OPENAI_MODEL  (gpt-5-chat-latest)  
 * OPENAI_TEMP   (0.3)          
 * OLLAMA_MODEL  (gemma3:4b)    
 * OLLAMA_TEMP   (0.3)          
