@@ -51,13 +51,13 @@ $ docker ps -a --filter status=exited
 Environment variables
 ---------------------
 Required for `ai`:
-• OPENAI_API_KEY – your OpenAI key
+* OPENAI_API_KEY – your OpenAI key
 
 Optional (defaults):
-• OPENAI_MODEL  (gpt-4-turbo)  
-• OPENAI_TEMP   (0.3)          
-• OLLAMA_MODEL  (gemma3:4b)    
-• OLLAMA_TEMP   (0.3)          
-• OLLAMA_HOST   (http://localhost:11434)
+* OPENAI_MODEL  (gpt-4-turbo)  
+* OPENAI_TEMP   (0.3)          
+* OLLAMA_MODEL  (gemma3:4b)    
+* OLLAMA_TEMP   (0.3)          
+* OLLAMA_HOST   (http://localhost:11434)
 
 Dependencies: curl, jq, and – for `aio` – a running Ollama daemon somewhere.
