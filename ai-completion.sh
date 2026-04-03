@@ -112,6 +112,22 @@ _ai_fetch_openai() {
         -d "$payload" | jq -r '.choices[0].message.content'
 }
 
+# _ai_fetch_apfel <user_content> <shell_name> <os_name>
+# -----------------------------------------------------
+# Calls the apfel CLI (Apple Intelligence) and echoes the response.
+_ai_fetch_apfel() {
+    local user_content="$1" shell_name="$2" os_name="$3"
+    local temp="${OLLAMA_TEMP:-0.3}"
+
+    local sys_prompt
+    sys_prompt="You are a ${shell_name} command generator on ${os_name}. Return ONLY the command on a single line without any explanation or markdown formatting."
+
+    local result
+    result=$(apfel -s "$sys_prompt" --temperature "$temp" --quiet --no-color "$user_content" 2>/dev/null)
+    # Strip markdown code fences (```lang ... ```)
+    printf '%s' "$result" | sed '/^```/d'
+}
+
 # _ai_fetch_ollama <user_content> <shell_name> <os_name>
 # ------------------------------------------------------
 # Calls the local Ollama chat endpoint and echoes the response.
@@ -166,6 +182,7 @@ _ai_main() {
     local suggestion
     case "$provider" in
         openai)  suggestion=$(_ai_fetch_openai "$user_content" "$shell_name" "$os_name") ;;
+        apfel)   suggestion=$(_ai_fetch_apfel "$user_content" "$shell_name" "$os_name") ;;
         ollama)  suggestion=$(_ai_fetch_ollama "$user_content" "$shell_name" "$os_name") ;;
         *)       echo "Unknown provider $provider" >&2; return 1 ;;
     esac
@@ -183,5 +200,12 @@ _ai_main() {
 ai()  { _ai_main openai "$@"; }
 
 # aio ------------------------------------------------------------------------
-# Uses a local Ollama instance
-aio() { _ai_main ollama "$@"; }
+# Uses apfel (Apple Intelligence) if available, otherwise falls back to
+# a local Ollama instance.
+aio() {
+    if command -v apfel &>/dev/null; then
+        _ai_main apfel "$@"
+    else
+        _ai_main ollama "$@"
+    fi
+}

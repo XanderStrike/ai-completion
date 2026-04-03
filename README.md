@@ -5,8 +5,8 @@ Tiny shell helper that lets you draft, tweak, and run AI-generated commands stra
 
 It exposes two public functions:
 
-• ai  – talks to the OpenAI Chat Completions API  
-• aio – talks to a local Ollama daemon
+- ai  – talks to the OpenAI Chat Completions API
+- aio – talks to [apfel](https://github.com/Arthur-Ficial/apfel) (Apple Intelligence) if installed, otherwise falls back to a local Ollama daemon
 
 Quick install
 -------------
@@ -40,7 +40,17 @@ $ git commit -am "Refactor payload construction using jq for better JSON handlin
 
 Local
 -----
-Save a buck using local ollama for the easy stuff
+Save a buck using a local model for the easy stuff. Local models can be inconsistent, double check all commands.
+
+With [apfel](https://github.com/Arthur-Ficial/apfel) (macOS only, uses Apple Intelligence on-device):
+
+```shell
+➜ aio list stopped docker containers
+$ docker ps -a --filter status=exited
+```
+
+
+If apfel is not installed, `aio` falls back to Ollama:
 
 ```shell
 ➜ aio list stopped docker containers
@@ -60,4 +70,4 @@ Optional (defaults):
 * OLLAMA_TEMP   (0.3)          
 * OLLAMA_HOST   (http://localhost:11434)
 
-Dependencies: curl, jq, and – for `aio` – a running Ollama daemon somewhere.
+Dependencies: curl, jq. Optionally [apfel](https://github.com/Arthur-Ficial/apfel) (`brew install Arthur-Ficial/tap/apfel`) for `aio` on macOS, or a running Ollama daemon as a fallback.
